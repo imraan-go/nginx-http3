@@ -1,22 +1,17 @@
 ## What is this?
-[![Docker Image CI](https://github.com/macbre/docker-nginx-http3/actions/workflows/dockerimage.yml/badge.svg)](https://github.com/macbre/docker-nginx-http3/actions/workflows/dockerimage.yml)
+
 
 Stable and up-to-date [nginx](https://nginx.org/en/CHANGES) with [QUIC + **HTTP/3 experimental support**](https://hg.nginx.org/nginx-quic/shortlog/quic), [Google's `brotli` compression](https://github.com/google/ngx_brotli), [`njs` module](https://nginx.org/en/docs/njs/) and [Grade A+ SSL config](https://ssl-config.mozilla.org/)
 
-nginx binary is built from [`quic` experimental branch](https://hg.nginx.org/nginx-quic/shortlog/quic). It's **not production-ready** yet!
+nginx binary is built from [`quic` experimental branch](https://hg.nginx.org/nginx-quic/shortlog/quic).
 
 ## How to use this image
 As this project is based on the official [nginx image](https://hub.docker.com/_/nginx/) look for instructions there. In addition to the standard configuration directives, you'll be able to use the brotli module specific ones, see [here for official documentation](https://github.com/google/ngx_brotli#configuration-directives)
 
 ```
-docker pull macbre/nginx-http3:latest
+docker pull imraango/nginx-http3:latest
 ```
 
-You can fetch an image from [Github Containers Registry](https://github.com/macbre/docker-nginx-brotli/pkgs/container/nginx-http3) as well:
-
-```
-docker pull ghcr.io/macbre/nginx-http3:latest
-```
 
 ## What's inside
 
@@ -27,7 +22,7 @@ docker pull ghcr.io/macbre/nginx-http3:latest
 * [`njs` module](https://nginx.org/en/docs/njs/) - a subset of the JavaScript language that allows extending nginx functionality
 
 ```
-$ docker run -it macbre/nginx-http3 nginx -V
+$ docker run -it imraango/nginx-http3 nginx -V
 nginx version: nginx/1.23.2 (quic-3be953161026-boringssl-8ce0e1c14e48109773f1e94e5f8b020aa1e24dc5)
 built by gcc 11.2.1 20220219 (Alpine 11.2.1_git20220219) 
 built with OpenSSL 1.1.1 (compatible; BoringSSL) (running with BoringSSL)
@@ -86,7 +81,7 @@ configure arguments:
 	--with-cc-opt=-I../boringssl/include 
 	--with-ld-opt='-L../boringssl/build/ssl -L../boringssl/build/crypto'
 
-$ docker run -it macbre/nginx-http3 njs -v
+$ docker run -it imraango/nginx-http3 njs -v
 0.7.7
 ```
 
@@ -97,8 +92,6 @@ Please refer to [Mozilla's SSL Configuration Generator](https://ssl-config.mozil
 ```
     ssl_dhparam /etc/ssl/dhparam.pem;
 ```
-
-See [ssllabs.com test results for wbc.macbre.net](https://www.ssllabs.com/ssltest/analyze.html?d=wbc.macbre.net).
 
 ## nginx config files includes
 
@@ -147,9 +140,16 @@ Refer to `run-docker.sh` script on how to run this container and properly mount 
 
 ## Development
 
-Building an image:
+Building an image in the current architecture of the host OS:
 
 ```
-docker pull ghcr.io/macbre/nginx-http3:latest
-DOCKER_BUILDKIT=1 docker build . -t macbre/nginx --cache-from=ghcr.io/macbre/nginx-http3:latest --progress=plain
+docker build --tag imraango/nginx-http3:latest \
+--tag imraango/nginx-http3:latest .
+```
+
+```
+docker buildx build \
+--push \
+--platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
+--tag imraango/nginx-http3:latest .
 ```
