@@ -233,15 +233,6 @@ RUN \
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY ssl_common.conf /etc/nginx/conf.d/ssl_common.conf
 
-# show env
-RUN env | sort
-
-# njs version
-RUN njs -v
-
-# test the configuration
-RUN nginx -V; nginx -t
-
 EXPOSE 80 443
 
 STOPSIGNAL SIGTERM
